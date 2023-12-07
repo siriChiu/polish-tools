@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    siri:
+      email: siriChiu8632@gmail.com
+      name: siri
+      password: "$2b$12$DM/Q8YrYjZrpDbeHBrnZWecnDSJS6nB2puuP0ckcO9Hk51uuFvuau"
+    admin:
+      email: siriChiu8632@gmail.com
+      name: admin
+      password: "$2b$12$6gxGAooQ6Uq7OJ15.oDzhOqQbok8VDcZX8TNHlf3e14KSLz/.lj/W"
+cookie:
+  expiry_days: 30
+  key: 
+  name: 'user-cookie'
+preauthorized:
+  emails:
+  - siriChiu8632@gmail.com
