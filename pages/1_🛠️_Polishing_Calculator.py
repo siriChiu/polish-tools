@@ -25,36 +25,35 @@ def gen_email_content(df):
 if "results_table" not in st.session_state:
     st.session_state.results_table = pd.DataFrame( columns=['拋光前重量 (g)', '拋光後重量 (g)','晶圓厚度 (μm)'])
     
-if "wafer_before" not in st.session_state:
-    st.session_state.wafer_before = 0.0
+if "buff_weight_before" not in st.session_state:
+    st.session_state.buff_weight_before = None
     
-if "wafer_after" not in st.session_state:
-    st.session_state.wafer_after = 0.0
+if "buff_weight_after" not in st.session_state:
+    st.session_state.buff_weight_after = None
     
-def calculate_wafer_thickness(weight_before, weight_after, wafer_diameter):
+def calculate_wafer_thickness(input_weight_before, input_weight_after, wafer_diameter):
     density = 2330000  # g/m^3
-    weight_difference = weight_before - weight_after
+    weight_difference = input_weight_before - input_weight_after
     wafer_thickness = weight_difference / (density * math.pi * (wafer_diameter ** 2)) *1000000
     return wafer_thickness
 
 st.title("拋光計算機")
 
-
-weight_before = st.number_input("拋光前重量 (g)",key="weight_before", step=0.01)
-weight_after = st.number_input("拋光後重量 (g)",key="weight_after", step=0.01)
+st.number_input("拋光前重量 (g)",key="input_weight_before", step=0.001,value=None, placeholder="請輸入拋光前重量")
+st.number_input("拋光後重量 (g)",key="input_weight_after", step=0.001,value=None, placeholder="請輸入拋光後重量")
 wafer_diameter = st.selectbox("選擇晶圓尺寸", ["6 英吋", "8 英吋", "12 英吋"])
 
 def submit():
-    st.session_state.wafer_before = st.session_state.weight_before
-    st.session_state.weight_before = 0.0
-    st.session_state.wafer_after = st.session_state.weight_after
-    st.session_state.weight_after = 0.0
+    st.session_state.buff_weight_before = st.session_state.input_weight_before
+    st.session_state.buff_weight_after = st.session_state.input_weight_after
     
+    st.session_state.input_weight_before = None
+    st.session_state.input_weight_after = None
     
 df = st.session_state.results_table
 if st.button("計算", on_click=submit,type="primary"):
-    before = st.session_state.wafer_before
-    after = st.session_state.wafer_after
+    before = st.session_state.buff_weight_before
+    after = st.session_state.buff_weight_after
     
     if before < after:
         st.error("拋光前重量不可比拋光後重量大")

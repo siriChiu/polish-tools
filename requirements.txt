@@ -1,4 +1,4 @@
-streamlit==1.26.0
+streamlit==1.29.0
 streamlit-authenticator==0.2.3
 streamlit-camera-input-live==0.2.0
 streamlit-card==0.0.61
