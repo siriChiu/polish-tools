@@ -9,7 +9,7 @@ from pretty_html_table import build_table
 import pandas as pd
 
 st.set_page_config(
-    page_title="佑能科技-拋光研磨計算機",
+    page_title="佑能科技-拋光計算機",
     page_icon="🌟",
 )
 
@@ -17,7 +17,7 @@ st.set_page_config(
 def gen_email_content(df):
     table = build_table(df, 'grey_light')
     email_content = """
-    您的拋光研磨計算結果如下:
+    您的拋光計算結果如下:
     """ + table + """
     """
     return email_content
@@ -37,7 +37,7 @@ def calculate_wafer_thickness(weight_before, weight_after, wafer_diameter):
     wafer_thickness = weight_difference / (density * math.pi * (wafer_diameter ** 2)) *1000000
     return wafer_thickness
 
-st.title("拋光研磨計算機")
+st.title("拋光計算機")
 
 
 weight_before = st.number_input("拋光前重量 (g)",key="weight_before", step=0.01)

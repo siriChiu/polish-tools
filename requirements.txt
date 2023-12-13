@@ -11,3 +11,4 @@ streamlit-lottie==0.0.5
 streamlit-toggle-switch==1.0.2
 streamlit-vertical-slider==1.0.2
 pretty-html-table==0.9.16
+st-pages==0.4.5

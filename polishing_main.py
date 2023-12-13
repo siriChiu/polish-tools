@@ -5,9 +5,10 @@ import pickle
 import json
 from streamlit.source_util import _on_pages_changed, get_pages
 from streamlit_extras.switch_page_button import switch_page
+from st_pages import Page, show_pages, add_page_title
 
 st.set_page_config(
-    page_title="佑能科技-拋光工具",
+    page_title="佑能科技-工具箱",
     page_icon="🌟",
 )
 
@@ -71,6 +72,19 @@ def hide_page(name: str):
 clear_all_but_first_page()
 
 def main():
+        # Optional -- adds the title and icon to the current page
+    add_page_title()
+
+    # Specify what pages should be shown in the sidebar, and what their titles and icons
+    # should be
+    show_pages(
+        [
+            Page("polishing_main.py", "首頁", "🏠"),
+            Page("pages/1_🛠️_Polishing_Calculator.py", "拋光計算機", "🛠️"),
+        ]
+    )
+    
+    
     # --- USER AUTHENTICATION ---
 
     names = ["Siri", "Admin"]
