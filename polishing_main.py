@@ -1,11 +1,9 @@
 import streamlit as st
-import streamlit_authenticator as stauth
 from pathlib import Path
-import pickle
 import json
 from streamlit.source_util import _on_pages_changed, get_pages
-from streamlit_extras.switch_page_button import switch_page
 from st_pages import Page, show_pages, add_page_title
+import hmac
 
 st.set_page_config(
     page_title="佑能科技-工具箱",
@@ -84,51 +82,57 @@ def main():
         ]
     )
     
-    
     # --- USER AUTHENTICATION ---
+    def check_password():
+        """Returns `True` if the user had a correct password."""
 
-    names = ["Siri", "Admin"]
-    usernames = ["siri", "admin"]
+        def login_form():
+            """Form with widgets to collect user information"""
+            with st.form("Credentials"):
+                st.text_input("帳號", key="username")
+                st.text_input("密碼", type="password", key="password")
+                st.form_submit_button("登入", on_click=password_entered)
 
-    # load hashed passwords
-    file_path = Path(__file__).parent / "hashed_pw.pkl"
-    with file_path.open("rb") as file:
-        hashed_passwords = pickle.load(file)
+        def password_entered():
+            """Checks whether a password entered by the user is correct."""
+            if st.session_state["username"] in st.secrets[
+                "passwords"
+            ] and hmac.compare_digest(
+                st.session_state["password"],
+                st.secrets.passwords[st.session_state["username"]],
+            ):
+                st.session_state["password_correct"] = True
+                del st.session_state["password"]  # Don't store the username or password.
+                del st.session_state["username"]
+            else:
+                st.session_state["password_correct"] = False
 
-    credentials = {"usernames":{}}
-    for uname,name,pwd in zip(usernames,names,hashed_passwords):
-        user_dict = {"name": name, "password": pwd}
-        credentials["usernames"].update({uname: user_dict})
-        
-    authenticator = stauth.Authenticate(credentials, 'pt-userinfo', 'random_key', cookie_expiry_days=30)
+        # Return True if the username + password is validated.
+        if st.session_state.get("password_correct", False):
+            return True
 
-    name, authentication_status, username = authenticator.login("Login", "main")
+        # Show inputs for username + password.
+        login_form()
+        if "password_correct" in st.session_state:
+            st.error("😕 User not known or password incorrect")
+        return False
 
-
-    if authentication_status == False:
-        st.error("Username/password is incorrect")
+    if not check_password():
         clear_all_but_first_page()  # clear all page but show first page
+        st.stop()
 
-    if authentication_status == None:
-        st.warning("Please enter your username and password")
-        clear_all_but_first_page()  # clear all page but show first page
-
-    if authentication_status:
-        show_all_pages()  # call all page
-        # hide_page(DEFAULT_PAGE.replace(".py", ""))  # hide first page
-        st.title(f"嗨! {name}👋")
-        st.write("")
-        st.markdown(
-            """
-            #### 這是佑能科技的拋光計算機套件    
+    show_all_pages()  # call all page
+    # hide_page(DEFAULT_PAGE.replace(".py", ""))  # hide first page
+    st.title(f"嗨 歡迎光臨! 👋")
+    st.write("")
+    st.markdown(
         """
-        )
-        st.write("")
-        st.write("")
-        st.write("")
-        authenticator.logout('登出', 'main')
-        # switch_page(SECOND_PAGE_NAME)   # switch to second page
-        # st.stop()
+        #### 這是佑能科技的拋光計算機套件    
+    """
+    )
+    st.write("")
+    st.write("")
+    st.write("")
     
     
 if __name__ == "__main__":
